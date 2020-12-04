@@ -16,7 +16,7 @@
 
 ### 2、Docker架构原理
 
-![image-20201130165613062](E:\坚果云同步\我的坚果云\笔记\Markdown笔记\image-20201130165613062.png)
+![image-20201130165613062](https://github.com/Huangbinghui/Docker_learn/blob/main/image-20201130165613062.png)
 
 
 
