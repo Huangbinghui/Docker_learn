@@ -16,7 +16,7 @@
 
 ### 2、Docker架构原理
 
-![image-20201130165613062](E:\坚果云同步\我的坚果云\笔记\Markdown笔记\image-20201130165613062.png)
+![image-20201130165613062](https://github.com/Huangbinghui/Docker_learn/blob/main/image-20201130165613062.png)
 
 
 
@@ -52,7 +52,7 @@
 
 虚拟机体系结构：
 
-![image-20201130193517659](E:\坚果云同步\我的坚果云\笔记\Markdown笔记\image-20201130193517659.png)
+![image-20201130193517659](https://github.com/Huangbinghui/Docker_learn/blob/main/image-20201130193517659.png)
 
 * Server：真实的电脑。
 * Host OS：真实电脑操作系统。
@@ -64,7 +64,7 @@
 
 Docker体系结构：
 
-![image-20201130193724552](E:\坚果云同步\我的坚果云\笔记\Markdown笔记\image-20201130193726562.png)
+![image-20201130193724552](https://github.com/Huangbinghui/Docker_learn/blob/main/image-20201130193726562.png)
 
 * Server：真实的电脑。
 * Host OS：真实电脑操作系统。
