@@ -268,3 +268,99 @@ Docker体系结构：
 
   `docker run -it -v /宿主机目录:/容器目录:ro 镜像名`
 
+## 七、Docker常用软件安装
+
+### 	1、Docker上安装Tomcat及配置
+
+* 第一步：先运行一个容器
+* 第二步：宿主机里home目录下新建tomcat目录，复制容器里conf,webapps到宿主机
+
+```shell
+docker cp 容器id:/usr/local/tomcat/conf  /home/tomcat/
+docker cp 容器id:/usr/local/tomcat/webapps  /home/tomcat/
+```
+
+* 第三步：把容器里的tomcat里的webapp，logs，conf挂载到宿主机tomcat目录下，方便上传代码，同步持久化日志，以及方便配置tomcat；
+
+```shell
+ docker run -d --name 容器名称 -p 80:8080 -v /home/tomcat/conf/:/usr/local/tomcat/conf/  -v /home/tomcat/webapps/:/usr/local/tomcat/webapps/ -v /home/tomcat/logs/:/usr/local/tomcat/logs/  镜像ID
+```
+
+* 第四步：配置tomcat server.xml 以及 同步上传war包
+
+```xml
+<Context path="" docBase="/usr/local/tomcat/webapps/WebTest" debug="0" reloadable="true" />   
+```
+
+### 	2、Docker上安装mysql5.7以及配置
+
+* 第一步：运行容器
+
+  
+
+* 第二步：宿主机里home目录下新建mysql目录，复制容器里conf,webapps到宿主机
+
+   ``` shell
+  docker cp 容器id:/etc/mysql/conf.d /home/mysql/
+  
+  docker cp 容器id::/var/log /home/mysql/
+  
+  docker cp 容器id::/var/lib/mysql /home/mysql/ 
+   ```
+
+   
+
+* 第三步：把容器里的tomcat里的webapp，logs，conf挂载到宿主机tomcat目录下，方便上传代码，同步持久化日志，以及方便配置tomcat；关掉容器，启动容器；
+
+  ```shell
+  docker run -p 3306:3306 -d -v /etc/mysql/conf.d/:/home/mysql/conf/ -v /var/log:/home/mysql/log/ -v /var/lib/mysql/:/home/mysql/mysql/ -e MYSQL_ROOT_PASSWORD=123456 镜像ID
+  ```
+
+  
+
+* 第四步：导入sql脚本 
+
+## 八、Docker迁移与备份
+
+> 我们开发的时候，经常自定义镜像，然后commit提交成镜像到本地仓库，但是我们发布到客户服务器的时候，可以用前面讲得搞到hub官方，或者阿里云，但是有些机密性的项目，是禁止公网存储的，所以我们只能通过docker镜像备份和迁移实现；
+
+### 	1、备份镜像
+
+```shell
+docker save -o 备份镜像的名称  源镜像名称:tag版本
+
+docker save -o mytomcat7.1.tar java1234/tomcat7:7.1
+```
+
+### 	2、恢复镜像
+
+```shell
+docker load -i 镜像文件
+
+docker load -i mytomcat7.1.tar
+```
+
+## 九、DockerFile
+
+### 	1、DockerFile简介
+
+> Dockerfile是由一系列命令和参数构成的脚本，这些命令应用于操作系统(centos或者Ubuntu)基础镜像并最终创建的一个新镜像；
+>
+>  
+>
+> 我们前面讲过的用手工的方式，修改配置文件，或者添加，删除文件目录的方式，来构建一种新镜像；这种手工方式麻烦，容易出错，而且不能复用；
+>
+> 我们这里讲Dockerfile，用脚本方式来构建自动化，可复用的，高效率的创建镜像方式，是企业级开发的首选方式；
+>
+>  
+>
+> 再软件系统开发生命周期中，采用Dockerfile来构建镜像；
+>
+> 1、对于开发人员:可以为开发团队提供一个完全一致的开发环境;
+>
+> 2、对于测试人员:可以直接拿开发时所构建的镜像或者通过Dockerfile文件构建一个新的镜像开始工作；
+>
+> 3、对于运维人员:在部署时，可以实现应用的无缝移植。
+
+### 	2、DockerFile常用命令
+
