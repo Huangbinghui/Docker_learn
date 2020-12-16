@@ -306,7 +306,7 @@ docker cp 容器id:/usr/local/tomcat/webapps  /home/tomcat/
   docker cp 容器id::/var/log /home/mysql/
   
   docker cp 容器id::/var/lib/mysql /home/mysql/ 
-   ```
+  ```
 
    
 
@@ -363,4 +363,106 @@ docker load -i mytomcat7.1.tar
 > 3、对于运维人员:在部署时，可以实现应用的无缝移植。
 
 ### 	2、DockerFile常用命令
+
+* `FROM image_name:tag` ：定义了使用哪个基础镜像启动构建流程
+* `MAINTAINER user_info` ：声明镜像维护者信息
+* `LABEL key value`：镜像描述元信息（可以写多条）
+* `ENV key value`：设置环境变量（可以写多条）
+* `RUN command` : 构建镜像时需要运行的命令（可以写多条）
+* `WORKDIR path_dir` ：设置终端默认登录进来的工作目录
+* `EXPOSE port` ：当前容器对外暴露的端口
+* `ADD source_dir/file dest_dir/file` ：讲宿主机文件复制到容器内，如果是压缩文件，将在复制后自动解压。
+* `COPY source_dir/file dest_dir/file` ：和ADD类似，但如果有压缩文件不会自动解压。
+* `VOLUME` ：创建一个可以从本地主机或者其他容器挂载的挂载点，一般存放数据库和需要保持的数据等。
+* `CMD `：指定启动容器时要运行的命令，假如有多个，最后一个生效
+* `EntryPOINT` ：指定容器启动时要运行的命令
+* `ONBUILD` ：当一个被继承的DockerFile时运行的命令，父镜像在被子镜像继承后父镜像的ONBUILD触发。可以把ONBUILD理解为一个触发器。
+
+## 十、DockerFile构建自定义CentOS
+
+### 1、编写DockerFile
+
+```dockerfile
+FROM centos
+
+MAINTAINER caofeng<caofeng2012@126.com>
+
+
+
+LABEL name="Java1234 CentOS Image" \
+
+    build-date="20191112"
+
+    
+
+ENV WORKPATH /home/
+
+WORKDIR $WORKPATH
+
+
+
+RUN yum -y install net-tools
+
+RUN yum -y install vim
+
+
+
+EXPOSE 80
+
+CMD /bin/bash
+```
+
+### 2、构建
+
+`docker build -f MycentOSDockerFile -t hbh/CentOS:1.1 .` ：**注意后面要有个句号**
+
+### 3、运行
+
+`docker run -it 镜像ID`
+
+### 4、查看历史镜像
+
+`docker history镜像ID `
+
+## 十一、Docker私有仓库
+
+### 1、搭建
+
+* 第一步：拉取私有仓库镜像 （私有仓库程序本身就是一个镜像）
+
+* 第二步：启动私有仓库容器
+
+  `docker run -di --name=myRegistry -p 5000:5000 registry`
+
+* 第三步：测试
+
+  http://192.168.1.112:5000/v2/_catalog
+
+* 第四步：etc/docker 修改daemon.json，让docker信任私有仓库地址
+
+  `"insecure-registries": ["192.168.1.112:5000"]`
+
+* 第五步：修改配置后重启docker；
+
+  ` systemctl restart docker`
+
+### 2、测试
+
+* 第一步：标记此镜像为私有仓库的镜像
+
+  `docker tag tomcat:7 192.168.1.112:5000/mytomcat7`
+
+* 第二步：上传镜像到私有仓库
+
+  `docker push 192.168.1.112:5000/mytomcat7`
+
+* 第三步：删除192.168.1.112:5000/mytomcat7本地仓库镜像
+
+  `docker rmi -f 192.168.1.112:5000/mytomcat7`
+
+* 第四步：从私有仓库拉取192.168.1.112:5000/mytomcat7镜像，并运行；
+
+  `docker run -it -p 8080:8080 192.168.1.112:5000/mytomcat7`
+
+* 第五步：浏览器运行 http://192.168.1.112:8080测试
 
